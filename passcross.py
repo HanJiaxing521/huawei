@@ -18,6 +18,7 @@ def tailPosition(nexCarPosition, nexRoadLaneNum, nexRoadLength):
             if nexCarPosition[car][2] == lane+1:
                 if nexCarPosition[car][3] < tail[lane]:
                     tail[lane] = nexCarPosition[car][3]
+    print(tail)
     return tail
 
 
