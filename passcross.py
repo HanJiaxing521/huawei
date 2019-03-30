@@ -6,6 +6,16 @@ def minCmp(a, b):
         min = b
     return min
 
+def find(a,B,p):
+    E = []
+    for i in range(a):
+        D = []
+        for j in range(len(B)):
+            if B[j][p] == i+1:
+                D.append(B[j])
+        E.append(D)
+    return E
+
 def tailPosition(nexCarPosition, nexRoadLaneNum, nexRoadLength):
     """return the tails lyst of different lanes of the next road."""
     tail = []
@@ -30,6 +40,7 @@ def passRoad(carLyst, carPosition, nexCarPosition, curRoad, nexRoad):
        curRoad is the info of current road: [roadID, length, maxLimitSpeed, laneNum, startID, endID, isTwoDir].
        nexRoad is the info of next road: [roadID, length, maxLimitSpeed, laneNum, startID, endID, isTwoDir]. """
     # define the max speed
+    find(curRoad[1],B,2)
     v_lyst = [car[3] for car in carLyst]
     v1_lyst = [minCmp(v, curRoad[2]) for v in v_lyst]
     v2_lyst = [minCmp(v, nexRoad[2]) for v in v_lyst]
@@ -39,10 +50,13 @@ def passRoad(carLyst, carPosition, nexCarPosition, curRoad, nexRoad):
     sv2 = v2_lyst 
 
     # define the max left length of current road
-    s1 = [minCmp(curRoad[1] - carPosition[car][3], sv1[car]) for car in range(len(carPosition))]
+    for position in range(1, len(carPosition)+1):
+        s1 = [minCmp(curRoad[1] - position[car][3], sv1[car]) for car in range(len(position))]
     
     # calculate the next position of cars
-    for car in range(len(carPosition)):        
+    for position in range(len(carPosition)):        
+        for car in range(len(position)):
+            
         if s1[car] < sv1[car]:
             if s1[car] < sv2[car]:
                 s2 = sv2[car] - s1[car]

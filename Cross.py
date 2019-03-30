@@ -1,3 +1,38 @@
+def swap(lyst, i, j):
+        """change two elements' position"""
+        t = lyst[i]
+        lyst[i] = lyst[j]
+        lyst[j] = t
+
+def quickSortHelper(lyst, left, right):
+        if left < right:
+            pivotLocation = partition(lyst, left, right)
+            quickSortHelper(lyst, left, pivotLocation - 1)
+            quickSortHelper(lyst, pivotLocation+1, right)
+    
+    
+
+def partition(lyst, left, right):
+    middle = (left + right) // 2
+    pivot = lyst[middle]
+    lyst[middle] = lyst[right]
+    lyst[right] = pivot
+    boundary = left
+    for index in range(left, right):
+        if lyst[index] < pivot:
+            swap(lyst, index, boundary)
+            boundary += 1
+    swap(lyst, right, boundary)
+    return boundary
+
+def minCmp(a, b):
+        """return the min of two numbers"""
+        if a < b:
+            min = a
+        else:
+            min = b
+        return min
+
 class Cross(object):
     def __init__(self, road1=None, road2=None, road3=None, road4=None):
         self.road1 = road1
@@ -9,39 +44,8 @@ class Cross(object):
         """sort the schedule of the roads"""
         quickSortHelper(lyst, 0, len(lyst) - 1)
 
-    def quickSortHelper(self, lyst, left, right):
-        if left < right:
-            pivotLocation = partition(lyst, left, right)
-            quickSortHelper(lyst, left, pivotLocation - 1)
-            quickSortHelper(lyst, pivotLocation+1, right)
     
-    def swap(self, lyst, i, j):
-        """change two elements' position"""
-        t = lyst[i]
-        lyst[i] = lyst[j]
-        lyst[j] = t
-
-    def partition(self, lyst, left, right):
-        middle = (left + right) // 2
-        pivot = lyst[middle]
-        lyst[middle] = lyst[right]
-        lyst[right] = pivot
-        boundary = left
-        for index in range(left, right):
-            if lyst[index] < pivot:
-                swap(lyst, index, boundary)
-                boundary += 1
-        swap(lyst, right, boundary)
-        return boundary
-
-    def minCmp(self, a, b):
-        """return the min of two numbers"""
-        if a < b:
-            min = a
-        else:
-            min = b
-        return min
-
+    
     def tailPosition(self, nexCarPosition, nexRoadLaneNum, nexRoadLength):
         """return the tails lyst of different lanes of the next road."""
         tail = []
@@ -82,10 +86,10 @@ class Cross(object):
                 if s1[car] < sv2[car]:
                     s2 = sv2[car] - s1[car]
                     for lane in range(nexRoad[3]):
-                        if tailPosition(nexCarPosition, nexRoad[3], nexRoad[1])[lane] == 1:
+                        if self.tailPosition(nexCarPosition, nexRoad[3], nexRoad[1])[lane] == 1:
                             continue
-                        if s2 >= tailPosition(nexCarPosition, nexRoad[3], nexRoad[1])[lane]:
-                            carPosition[car][3] = tailPosition(nexCarPosition, nexRoad[3], nexRoad[1])[lane] - 1
+                        if s2 >= self.tailPosition(nexCarPosition, nexRoad[3], nexRoad[1])[lane]:
+                            carPosition[car][3] = self.tailPosition(nexCarPosition, nexRoad[3], nexRoad[1])[lane] - 1
                         else:
                             carPosition[car][3] = s2                    
                         carPosition[car][2] = lane+1
