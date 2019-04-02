@@ -84,18 +84,20 @@ def passCross(carLyst, roadLyst, leftRoadInfoLyst, rightRoadInfoLyst):
     for road in roadLyst:
         sortID.append(road[0])
     sort(sortID)
-
+    print("sortID", sortID)
     sortRoad = []
     for roadID in sortID:
         for road in range(len(roadLyst)):
-            if roadID == roadLyst[road]:
+            if roadID == roadLyst[road][0]:
                 sortRoad.append(rightRoadInfoLyst[road])
                 break
-    
+    print("sortRoad", sortRoad)
     for road in range(len(sortRoad)):
         
         # Get the speed matrix of roads
-        v1_lyst = sortRoad[road]
+        v1_lyst = sortRoad[road][:]
+        print("v1", v1_lyst)
+        print("road", sortRoad[road])
         for position in range(len(v1_lyst)):
             for lane in range(len(v1_lyst[position])):
                 id = v1_lyst[position][lane]
@@ -105,18 +107,18 @@ def passCross(carLyst, roadLyst, leftRoadInfoLyst, rightRoadInfoLyst):
         # Get the S1 of every car for one roads
         s1 = v1_lyst
         for position in range(len(s1)):
-            for lane in range(s1[position]):
+            for lane in range(len(s1[position])):
                 if s1[position][lane] != None:
                     s1[position][lane] = position
-
+        print("s1", s1)
         # Begin run
+        print(sortRoad[road])
         for position in range(len(sortRoad[road])):
             for lane in range(len(sortRoad[road][position])):
-                
-                id = sortRoad[road][position]
+                id = sortRoad[road][position][lane]
                 if id == None:
-                    break
-           
+                    continue
+                print("id: ", id)
                 # Judge the direction
                 nexRoadId = carLyst[find2(carLyst, rightRoadInfoLyst[road][position][lane], 0)][5]
                 nexRoadPosition = find2(roadLyst, nexRoadId, 0)
@@ -146,18 +148,18 @@ def passCross(carLyst, roadLyst, leftRoadInfoLyst, rightRoadInfoLyst):
                         sortRoad[road][tail+1][lane] = id
                 elif nexRoadPosition-curRoadPosition == 1 or nexRoadPosition-curRoadPosition == -3:
                     canTurn = True
-                    for Road in rightRoadInfoLyst:
+                    for Road in range(len(rightRoadInfoLyst)):
                         firstCar = None
-                        if Road == sortRoad[road]:
-                            break
-                        for position in Road:
+                        if rightRoadInfoLyst[Road] == sortRoad[road]:
+                            continue
+                        for position in rightRoadInfoLyst[Road]:
                             for lane in position:
                                 if lane != None:
                                     firstCar = lane
                                     break
                         nex_RoadId = carLyst[find2(carLyst, firstCar, 0)][5]
-                        nex_RoadPosition = find2(roadLyst, nex_RoadId, 0)
-                        cur_RoadPosition = find1(roadLyst, road)
+                        nex_RoadPosition = find2(roadLyst, nexRoadId, 0)
+                        cur_RoadPosition = Road
                         
                         if abs(cur_RoadPosition-nex_RoadPosition) == 2:
                             canTurn = False
@@ -183,18 +185,18 @@ def passCross(carLyst, roadLyst, leftRoadInfoLyst, rightRoadInfoLyst):
 
                 else:
                     canTurn = True
-                    for Road in rightRoadInfoLyst:
+                    for Road in range(len(rightRoadInfoLyst)):
                         firstCar = None
-                        if Road == sortRoad[road]:
-                            break
-                        for position in Road:
+                        if rightRoadInfoLyst[Road] == sortRoad[road]:
+                            continue
+                        for position in rightRoadInfoLyst[Road]:
                             for lane in position:
                                 if lane != None:
                                     firstCar = lane
                                     break
                         nex_RoadId = carLyst[find2(carLyst, firstCar, 0)][5]
                         nex_RoadPosition = find2(roadLyst, nexRoadId, 0)
-                        cur_RoadPosition = find1(roadLyst, road)
+                        cur_RoadPosition = Road
                         
                         if abs(cur_RoadPosition-nex_RoadPosition) == 2 or nexRoadPosition-curRoadPosition == 1 or nexRoadPosition-curRoadPosition == -3:
                             canTurn = False
@@ -218,4 +220,76 @@ def passCross(carLyst, roadLyst, leftRoadInfoLyst, rightRoadInfoLyst):
                             tail = tailPosition(sortRoad[road], len(sortRoad[road][0]), position)[lane]
                             sortRoad[road][tail+1][lane] = id
 
+carLyst = [[100, 1001, 2001, 5, 69, 1002],
+           [101, 1001, 2001, 5, 43, 1002],
+           [102, 1003, 2001, 3, 42, 1002], 
+           [103, 1005, 2001, 4, 22, 1002],
+           [104, 1020, 2001, 4, 13, 1002],
+           [105, 1010, 2001, 6, 99, 1001],
+           [106, 1100, 2002, 4, 90, 1003],
+           [107, 1009, 1022, 7, 30, 1001],
+           [108, 1002, 2021, 4, 33, 1000],
+           [109, 2011, 2018, 5, 98, 1000],
+           [110, 1022, 2019, 5, 78, 1003],
+           [111, 1211, 2020, 4, 24, 1001]]
 
+roadLyst = [[1000, 10, 4, 3, 2, 3, 1],
+            [1002, 10, 4, 3, 4, 3, 1],
+            [1001, 10, 4, 3, 1, 3, 1],
+            [1003, 10, 4, 3, 5, 3, 1]]
+
+leftRoadInfoLyst = [[[None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [100, 102, None],
+                     [103, None, 104]],
+                    [[None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, 101, None]],
+                    [[None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [105, None, None]],
+                    [[None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [106, None, None],
+                     [107, None, None]]]
+rightRoadInfoLyst = [[[108, 109, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None]],
+                    [[None, 110, None],
+                     [None, 111, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None]],
+                    [[None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None]],
+                    [[None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None],
+                     [None, None, None]]]
+
+passCross(carLyst, roadLyst, leftRoadInfoLyst, rightRoadInfoLyst)
+print("rightRoad", rightRoadInfoLyst)
